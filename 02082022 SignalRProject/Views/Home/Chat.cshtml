@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Chat";
+    var user = User.Identity.Name;
+}
+
+  <div class="container display-flex">
+        <div class="row">&nbsp;</div>
+      <div class="col-6 justify-content-start">
+     <div class="row">
+            @if (User.Identity.IsAuthenticated)
+           {
+            <div class="col-2">User</div>
+            <div class="col-4"><input type="text" id="userInput" value="@User.Identity.Name"/></div>
+           }
+             else
+           {
+            <div class="col-2">User</div>
+            <div class="col-4"><input type="text" value="Bot" id="userInput"/></div>
+           }
+        </div>
+        <div class="row">
+            <div class="col-2">Message</div>
+            <div class="col-4"><input type="text" id="messageInput" /></div>
+        </div>
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <div class="col-6">
+                <input type="button" id="sendButton" value="Send Message" />
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        @foreach (var chatUser in ViewBag.ChatUsers)
+       {
+           @if (User.Identity.Name!=chatUser.UserName)
+           {
+            <ul>
+                @if (chatUser.isOnline)
+               {
+              <b> Offline :@chatUser.Fullname</b>
+                    <input type="button" id="sendPrivate" class="dropdown-item" value="Send Private Message" href="#">
+                    }
+                    else
+                    {
+                    <b> Offline :@chatUser.Fullname</b>
+                    <input type="button" id="sendPrivate" class="dropdown-item" value="Send Private Message" href="#">
+                    }
+                </ul>
+           }
+       }
+    </div>
+      </div>
+
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <ul id="messagesList">
+            </ul>
+        </div>
+    </div>
+
+    @section Scripts{
+
+      <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+         var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+         connection.start();
+
+           $("#sendButton").click(function(){
+             let user=$("#userInput").val();
+             let message=$("#messageInput").val();
+             connection.invoke("SendMessage",user,message)
+         })
+
+         connection.on("ReceiveMessage",function(user,message,date){
+              let li = `<li>${user} : ${message} ${date}</li>`
+            $("#messagesList").append(li);
+         });
+
+           $("#sendPrivate").click(function(){
+             let user=$("#userInput").val();
+             let message=$("#messageInput").val();
+             connection.invoke("SendMessagePrivate",user,message)
+           })
+
+         connection.on("ReceivePrivateMessage",function(user,message,date){
+              let li = `<li>${user} : ${message} ${date}</li>`
+            $("#messagesList").append(li);
+         });
+        
+        </script>
+    }
