@@ -4,8 +4,6 @@ using _02082022_SignalRProject.DAL;
 using _02082022_SignalRProject.Models;
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace _02082022_SignalRProject
 {
@@ -26,7 +24,7 @@ namespace _02082022_SignalRProject
             await Clients.All.SendAsync("ReceiveMessage", user, message, DateTime.Now.ToString("dd.MM.yyyy"));
         }
 
-       
+
         public override Task OnConnectedAsync()
         {
             if (Context.User.Identity.IsAuthenticated)
@@ -34,15 +32,23 @@ namespace _02082022_SignalRProject
                 AppUser user = _userManager.FindByNameAsync(Context.User.Identity.Name).Result;
                 user.ConnectId = Context.ConnectionId;
                 _context.SaveChanges();
+
+                Clients.All.SendAsync("Userconnect", user.Id);
             }
             return base.OnConnectedAsync();
         }
 
-
-        public async Task SendMessagePrivate(string id, string message)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.User(id).SendAsync("ReceivePrivateMessage", message, DateTime.Now.ToString());
-        }
+            if (Context.User.Identity.IsAuthenticated)
+            {
+                AppUser user = _userManager.FindByNameAsync(Context.User.Identity.Name).Result;
+                user.ConnectId = null;
+                _context.SaveChanges();
+                Clients.All.SendAsync("Userdisconnect", user.Id);
+            }
 
+            return base.OnDisconnectedAsync(exception);
+        }
     }
 }

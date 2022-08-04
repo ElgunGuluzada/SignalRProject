@@ -6,6 +6,18 @@
     <title>@ViewData["Title"] - _02082022_SignalRProject</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
+      <style>
+     .bg-online{
+         background-color:green !important;
+     }
+
+      .bg-offline{
+         background-color:gray !important;
+     }
+    
+    
+    </style>
 </head>
 <body>
     <header>
@@ -35,7 +47,7 @@
                         }
                         else
                         {
-                             <li class="nav-item">
+                            <li class="nav-item">
                             <a class="nav-link text-dark"  asp-controller="Home" asp-action="login">Login</a>
                         </li>
                         }

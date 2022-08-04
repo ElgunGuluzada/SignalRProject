@@ -6,6 +6,5 @@ namespace _02082022_SignalRProject.Models
     {
         public string Fullname { get; set; }
         public string ConnectId { get; set; }
-        public bool isOnline { get; set; }
     }
 }

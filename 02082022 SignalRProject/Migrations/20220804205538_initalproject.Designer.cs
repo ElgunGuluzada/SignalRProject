@@ -10,8 +10,8 @@ using _02082022_SignalRProject.DAL;
 namespace _02082022_SignalRProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220803011802_initalProject")]
-    partial class initalProject
+    [Migration("20220804205538_initalproject")]
+    partial class initalproject
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -209,9 +209,6 @@ namespace _02082022_SignalRProject.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
-
-                    b.Property<bool>("isOnline")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
